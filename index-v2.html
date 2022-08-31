@@ -1,0 +1,163 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<!-- Style -->
+
+<head>
+
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <style type="text/css">
+        body {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 24px;
+            padding: 100px;
+        }
+
+        input[type=text] {
+            background: #f8f8f8;
+            border: 0;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 24px;
+            padding: 20px;
+        }
+
+        table {
+            border-spacing: 0;
+        }
+        td {
+            border:1px solid black;
+            padding:5px;
+            font-size: 10px;
+        }
+
+        .correct {
+            background: green;
+        }
+    </style>
+
+</head>
+
+<!-- html -->
+
+<body>
+    <h2 class="time">0</h2> 
+    <h2>Score: <span class="score">0</span></h2>
+    <p>What is <span class="part-1">1</span> x <span class="part-2">1</span>
+        <input type="text" class="target"> </input>
+
+    <table id="score-sheet">
+
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+
+        $(".target").focus();
+
+
+        class timeTable {
+            constructor(a, b, timesCorrect, timesWrong) {
+                this.a = a;
+                this.b = b;
+                this.timesCorrect = timesCorrect;
+                this.timesWrong = timesWrong;
+            }
+        }
+
+        let allTables = [];
+
+        var i;
+        for (i = 1; i < 13; i++) {
+
+            $("#score-sheet").append('<tr></tr>'); 
+
+            var a = i;
+            var j;
+            for (j = 1; j < 13; j++) {
+                var b = j;
+                allTables.push(new timeTable(a, b, 0, 0));
+                var rowText = '<td class="a' + a + 'b' + b +'"">' + a + 'x' + b + '</td>';
+                $("#score-sheet tr:last-child").append(rowText); 
+            }
+        }
+        console.log(allTables);
+
+        localStorage.setItem('myAnswers', allTables);
+        // const cat = localStorage.getItem('myCat');
+
+        // console.log(cat);
+        // console.log('hello');
+        var score = 0;
+        var a = 1;
+        var b = 1;
+        var correctAnswer = a * b;
+        var z;
+
+        function generateNumbers() {
+            // a = Math.floor((Math.random() * 12));
+            // b = Math.floor((Math.random() * 12));
+
+            z = Math.floor((Math.random() * 144));
+
+            question = allTables[z];
+            a = question.a;
+            b = question.b;
+
+            correctAnswer = a * b;
+            $(".part-1").html(a);
+            $(".part-2").html(b);
+        }
+
+        function updateTable(x,y) {
+            var cellSelector = ".a" + x + "b" + y;
+            console.log(cellSelector); 
+            $(cellSelector).addClass("correct"); 
+        }
+
+        generateNumbers();
+
+
+        $(".target").change(function () {
+
+            var submission = this.value;
+            this.value = "";
+            // console.log(submission);
+            // console.log(correctAnswer);
+
+            if (submission == correctAnswer) {
+                // alert ("Correct!");
+                score += 1;
+                allTables[z].timesCorrect += 1;
+
+                $(".score").html(score);
+
+                const rollSound = new Audio("./ta-da.mp3");
+                rollSound.play();
+
+                console.log(allTables[z]);
+
+                updateTable(a,b);
+
+                generateNumbers();
+
+            }
+            else {
+                // alert("false");
+
+                allTables[z].timesWrong += 1;
+
+                const failSound = new Audio("./zombie.mp3");
+                failSound.play();
+                console.log(allTables[z]);
+
+            }
+
+        });
+
+    </script>
+</body>
+
+</html>
